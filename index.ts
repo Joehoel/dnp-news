@@ -1,15 +1,10 @@
 import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
 import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
-import type { CacheEntry } from "npm:cachified";
-import LRUCache from "npm:lru-cache";
-import { cachified } from "npm:cachified";
 type News = {
   title: string;
   excerpt: string;
   date: string;
 };
-
-const lru = new LRUCache<string, CacheEntry<News[]>>({ max: 1000 });
 
 const BASE_URL = "https://www.denieuwepsalmberijming.nl";
 serve(async () => {
