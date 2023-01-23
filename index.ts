@@ -10,7 +10,12 @@ const BASE_URL = "https://www.denieuwepsalmberijming.nl";
 serve(async () => {
   const news = await paginate(BASE_URL + "/nieuws", 1);
 
-  return new Response(JSON.stringify(news));
+  return new Response(JSON.stringify(news), {
+    headers: {
+      // Set time to live to 1 week
+      "Cache-Control": "s-maxage=604800",
+    },
+  });
 });
 
 // Paginate function that traverses all pages and gets all the news items
