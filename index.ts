@@ -1,14 +1,31 @@
 import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
 import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
+import { Cache } from "https://deno.land/x/local_cache/mod.ts";
+
 type News = {
   title: string;
   excerpt: string;
   date: string;
 };
 
+// TTL of 1 week
+const cache = new Cache<string, News[]>(604800);
+
 const BASE_URL = "https://www.denieuwepsalmberijming.nl";
+
 serve(async () => {
+  if (cache.get("nieuws")) {
+    return new Response(JSON.stringify(cache.get("nieuws")), {
+      headers: {
+        // Set time to live to 1 week
+        "Cache-Control": "s-maxage=604800",
+      },
+    });
+  }
+
   const news = await paginate(BASE_URL + "/nieuws", 1);
+
+  cache.set("nieuws", news);
 
   return new Response(JSON.stringify(news), {
     headers: {
