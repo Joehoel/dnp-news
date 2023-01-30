@@ -8,6 +8,7 @@ type News = {
   excerpt: string;
   date: string;
   content?: string;
+  slug: string;
 };
 
 // TTL of 1 week
@@ -52,13 +53,15 @@ const paginate = async (url: string, page = 1) => {
 
   const news = $(".mx_news_category_item")
     .map(function (_, element) {
-      const url = `${BASE_URL}${$(element).find("p a").attr("href")!}`;
+      const slug = $(element).find("p a").attr("href")!.replace("/", "");
+      const url = `${BASE_URL}/${slug}`;
 
       return {
         title: $(element).find("h2 a").text(),
         excerpt: $(element).find("p:nth-child(3)").text().replace("Lees meer »", "").trim(),
         date: $(element).find("time").attr("datetime")!,
         url: url,
+        slug,
       };
     })
     .toArray();
