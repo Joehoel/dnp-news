@@ -149,7 +149,8 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 // await app.listen();
-addEventListener("fetch", app.handle);
+await app.listen({ port: 8080 });
+// addEventListener("fetch", app.handle);
 
 // serve(async () => {
 //   if (cache.get("nieuws")) {
