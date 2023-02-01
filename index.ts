@@ -151,7 +151,7 @@ router
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-await app.listen({ port: 8000, hostname: "localhost" });
+await app.listen({ port: 8000 });
 
 // serve(async () => {
 //   if (cache.get("nieuws")) {
