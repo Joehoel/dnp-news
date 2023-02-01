@@ -56,7 +56,12 @@ const getPage = async (page: number) => {
 };
 
 const paginate = async (url: string, page = 1) => {
-  const res = await fetch(`${url}?mx_page=${page}`);
+  const res = await fetch(`${url}?mx_page=${page}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "text/html",
+    },
+  });
   const html = await res.text();
   const $ = cheerio.load(html);
 
