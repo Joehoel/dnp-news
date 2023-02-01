@@ -1,12 +1,7 @@
+import { Handler, serve } from "https://deno.land/std@0.175.0/http/server.ts";
 import { Cache } from "https://deno.land/x/local_cache/mod.ts";
-import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
-import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { z } from "https://deno.land/x/zod@v3.16.1/mod.ts";
 import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
-import { Handler, serve } from "https://deno.land/std@0.175.0/http/server.ts";
-
-const app = new Application();
-const router = new Router();
 
 const newsSchema = z.object({
   title: z.string(),
@@ -18,12 +13,19 @@ const newsSchema = z.object({
 
 type News = z.infer<typeof newsSchema>;
 
+// TTL of 1 week
+const cache = new Cache<string, News[]>(604800);
+// const cache = new Cache<string, News[]>(0);
+const BASE_URL = "https://www.denieuwepsalmberijming.nl";
+
 const getPage = async (page: number) => {
-  console.log(`Fetching page: ${page}`);
+  console.log(`Fetching page: ${BASE_URL}/nieuws?mx_page=${page}`);
   const res = await fetch(`${BASE_URL}/nieuws?mx_page=${page}`, {
     method: "GET",
     headers: {
       "Content-Type": "text/html",
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
     },
   });
   const html = await res.text();
@@ -58,11 +60,13 @@ const getPage = async (page: number) => {
   return { data: news, nextPage: page + 1, hasNextPage: page < totalPageCount };
 };
 
-const paginate = async (url: string, page = 1) => {
+const paginate = async (url: string, page = 1): Promise<News[] | Array<Omit<News, "content">>> => {
   const res = await fetch(`${url}?mx_page=${page}`, {
     method: "GET",
     headers: {
       "Content-Type": "text/html",
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
     },
   });
   const html = await res.text();
@@ -95,40 +99,21 @@ const paginate = async (url: string, page = 1) => {
 };
 
 const parse = async (url: string) => {
-  const html = await fetch(url).then(res => res.text());
+  const html = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "text/html",
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
+    },
+  }).then(res => res.text());
 
   const $ = cheerio.load(html);
 
   const content = $("#mx_news_item").html();
 
-  // Remove all content after the last script tag
   return content?.split("<script").shift()!;
-
-  // const document = new JSDOM(html).window.document;
-
-  // const reader = new Readability(document);
-
-  // const article = reader.parse();
-
-  // return article;
 };
-
-// type News = {
-//   title: string;
-//   excerpt: string;
-//   date: string;
-//   content?: string;
-//   slug: string;
-// };
-
-// TTL of 1 week
-const cache = new Cache<string, News[]>(604800);
-// const cache = new Cache<string, News[]>(0);
-const BASE_URL = "https://www.denieuwepsalmberijming.nl";
-
-const paramsSchema = z.object({
-  page: z.preprocess(v => parseInt(z.string().parse(v)), z.number().positive()),
-});
 
 const handler: Handler = async req => {
   try {
