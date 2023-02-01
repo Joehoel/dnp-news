@@ -148,7 +148,8 @@ router
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-await app.listen();
+// await app.listen();
+addEventListener("fetch", app.handle);
 
 // serve(async () => {
 //   if (cache.get("nieuws")) {
