@@ -3,6 +3,7 @@ import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
 import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { z } from "https://deno.land/x/zod@v3.16.1/mod.ts";
 import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
+import { serve } from "https://deno.land/std@0.175.0/http/server.ts";
 
 const app = new Application();
 const router = new Router();
@@ -148,8 +149,8 @@ router
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-// await app.listen();
-await app.listen({ port: 8080 });
+app.listen({ port: parseInt(Deno.env.get("PORT") || "8080") });
+
 // addEventListener("fetch", app.handle);
 
 // serve(async () => {
