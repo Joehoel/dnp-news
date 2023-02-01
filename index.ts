@@ -3,7 +3,7 @@ import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
 import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { z } from "https://deno.land/x/zod@v3.16.1/mod.ts";
 import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
-import { serve } from "https://deno.land/std@0.175.0/http/server.ts";
+import { Handler, serve } from "https://deno.land/std@0.175.0/http/server.ts";
 
 const app = new Application();
 const router = new Router();
@@ -20,7 +20,12 @@ type News = z.infer<typeof newsSchema>;
 
 const getPage = async (page: number) => {
   console.log(`Fetching page: ${page}`);
-  const res = await fetch(`${BASE_URL}/nieuws?mx_page=${page}`);
+  const res = await fetch(`${BASE_URL}/nieuws?mx_page=${page}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "text/html",
+    },
+  });
   const html = await res.text();
   const $ = cheerio.load(html);
 
@@ -125,35 +130,78 @@ const paramsSchema = z.object({
   page: z.preprocess(v => parseInt(z.string().parse(v)), z.number().positive()),
 });
 
-router
-  .get("/", async ctx => {
-    const params = paramsSchema.parse(getQuery(ctx, { mergeParams: true }));
+const handler: Handler = async req => {
+  try {
+    const url = new URL(req.url);
+
+    // Get the search params as number
+    const params = Object.fromEntries(url.searchParams.entries());
 
     if (cache.get("nieuws")) {
-      ctx.response.body = cache.get("nieuws");
+      return new Response(JSON.stringify(cache.get("nieuws")), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     }
 
     if (params.page) {
-      const news = await getPage(params.page);
+      const news = await getPage(parseInt(params.page));
 
-      ctx.response.body = news;
-    } else {
-      const news = await paginate(BASE_URL + "/nieuws", 1);
-
-      cache.set("nieuws", news);
-      ctx.response.body = news;
+      return new Response(JSON.stringify(news), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     }
-  })
-  .get("/:slug", ctx => {});
 
-app.use(router.routes());
-app.use(router.allowedMethods());
+    const news = await paginate(BASE_URL + "/nieuws", 1);
 
-app.addEventListener("listen", ({ port }) => {
-  console.log(`Listening on: localhost:${port}`);
-});
+    cache.set("nieuws", news);
+    return new Response(JSON.stringify(news), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: error.message ?? "Something went wrong", status: 500 }),
+      { status: 500 }
+    );
+  }
+};
 
-app.listen({ port: parseInt(Deno.env.get("PORT") || "8080") });
+await serve(handler, { port: 8000 });
+
+// router
+//   .get("/", async ctx => {
+//     const params = paramsSchema.parse(getQuery(ctx, { mergeParams: true }));
+
+//     if (cache.get("nieuws")) {
+//       ctx.response.body = cache.get("nieuws");
+//     }
+
+//     if (params.page) {
+//       const news = await getPage(params.page);
+
+//       ctx.response.body = news;
+//     } else {
+//       const news = await paginate(BASE_URL + "/nieuws", 1);
+
+//       cache.set("nieuws", news);
+//       ctx.response.body = news;
+//     }
+//   })
+//   .get("/:slug", ctx => {});
+
+// app.use(router.routes());
+// app.use(router.allowedMethods());
+
+// app.addEventListener("listen", ({ port }) => {
+//   console.log(`Listening on: localhost:${port}`);
+// });
+
+// app.listen({ port: parseInt(Deno.env.get("PORT") || "8080") });
 
 // addEventListener("fetch", app.handle);
 
