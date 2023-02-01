@@ -149,6 +149,10 @@ router
 app.use(router.routes());
 app.use(router.allowedMethods());
 
+app.addEventListener("listen", ({ port }) => {
+  console.log(`Listening on: localhost:${port}`);
+});
+
 app.listen({ port: parseInt(Deno.env.get("PORT") || "8080") });
 
 // addEventListener("fetch", app.handle);
