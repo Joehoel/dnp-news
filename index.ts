@@ -1,11 +1,8 @@
-import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
-import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
 import { Cache } from "https://deno.land/x/local_cache/mod.ts";
-import { Readability } from "https://esm.sh/@mozilla/readability";
-import { JSDOM } from "https://jspm.dev/jsdom";
-import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { getQuery } from "https://deno.land/x/oak@v11.1.0/helpers.ts";
+import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { z } from "https://deno.land/x/zod@v3.16.1/mod.ts";
+import * as cheerio from "https://esm.sh/cheerio@1.0.0-rc.12";
 
 const app = new Application();
 const router = new Router();
@@ -151,7 +148,7 @@ router
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-await app.listen({ port: 80 });
+await app.listen();
 
 // serve(async () => {
 //   if (cache.get("nieuws")) {
