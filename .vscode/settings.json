@@ -1,5 +1,9 @@
 {
   "deno.enable": true,
   "deno.unstable": true,
-  "deno.importMap": "./import_map.json"
+  "deno.importMap": "./import_map.json",
+  "yaml.schemas": {
+    "file:///Users/joel/.vscode/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
+    "https://json.schemastore.org/github-workflow.json": "file:///Users/joel/Developer/dnp-news/.github/workflows/deploy.yml"
+  }
 }
