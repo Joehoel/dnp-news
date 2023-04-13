@@ -1,11 +1,11 @@
-import { Handler, serve } from "http/server";
 import { Cache } from "cache";
+import { Handler, serve } from "http/server";
 import { getPage } from "./scrape.ts";
 
 type News = Awaited<ReturnType<typeof getPage>>;
 
-// TTL is 1 day
-const cache = new Cache<string, News>(1000 * 60 * 60 * 24 * 7);
+// TTL is 3 days
+const cache = new Cache<string, News>(1000 * 60 * 60 * 24 * 3.5);
 // const paginate = async (url: string, page = 1): Promise<News[] | Array<Omit<News, "content">>> => {
 //   const res = await fetch(`${url}?mx_page=${page}`, {
 //     method: "GET",
