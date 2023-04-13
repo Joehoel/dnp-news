@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "ky": "https://esm.sh/ky",
+    "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
+    "cache": "https://deno.land/x/local_cache/mod.ts",
+    "http/server": "https://deno.land/std@0.175.0/http/server.ts"
+  }
+}
