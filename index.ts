@@ -14,7 +14,9 @@ const newsSchema = z.object({
 type News = z.infer<typeof newsSchema>;
 
 // TTL of 1 week
-const cache = new Cache<string, News[]>(604800);
+type Value = Awaited<ReturnType<typeof getPage>>;
+
+const cache = new Cache<string, Value>(604800);
 // const cache = new Cache<string, News[]>(0);
 const BASE_URL = "https://www.denieuwepsalmberijming.nl";
 
@@ -132,6 +134,7 @@ const handler: Handler = async req => {
 
     if (params.page) {
       const news = await getPage(parseInt(params.page));
+      cache.set("nieuws", news);
 
       return new Response(JSON.stringify(news), {
         headers: {
@@ -140,19 +143,15 @@ const handler: Handler = async req => {
       });
     }
 
-    const news = await paginate(BASE_URL + "/nieuws", 1);
-
-    cache.set("nieuws", news);
-    return new Response(JSON.stringify(news), {
+    return new Response(JSON.stringify([]), {
       headers: {
         "Content-Type": "application/json",
       },
     });
   } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message ?? "Something went wrong", status: 500 }),
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: error.message ?? "Something went wrong", status: 500 }), {
+      status: 500,
+    });
   }
 };
 
