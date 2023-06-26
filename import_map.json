@@ -1,8 +1,12 @@
 {
   "imports": {
-    "ky": "https://esm.sh/ky",
+    "ky": "https://esm.sh/ky@0.33.3",
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
     "cache": "https://deno.land/x/local_cache@1.0/mod.ts",
-    "http/server": "https://deno.land/std@0.175.0/http/server.ts"
+    "http/server": "https://deno.land/std@0.175.0/http/server.ts",
+    "upstash": "https://deno.land/x/upstash_redis@v1.21.0/mod.ts",
+    "hono": "https://deno.land/x/hono@v3.2.6/mod.ts",
+    "dotenv":"https://deno.land/std@0.192.0/dotenv/load.ts",
+    "zod": "https://deno.land/x/zod@v3.21.4/mod.ts"
   }
 }

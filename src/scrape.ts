@@ -14,17 +14,8 @@ const dnp = ky.create({
 });
 
 export async function getPage(page: number | string = 1) {
-  console.log(`Fetching page: ${BASE_URL}/nieuws?mx_page=${page}`);
+  console.log(`Fetching page: ${BASE_URL}nieuws?mx_page=${page}`);
   const res = await dnp.get("nieuws?mx_page=" + page);
-
-  // const res = await fetch(`${BASE_URL}/nieuws?mx_page=${page}`, {
-  //   method: "GET",
-  //   headers: {
-  //     "Content-Type": "text/html",
-  //     "User-Agent":
-  //       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
-  //   },
-  // });
   const html = await res.text();
   const $ = cheerio.load(html);
 
@@ -32,12 +23,16 @@ export async function getPage(page: number | string = 1) {
 
   const news = $(".mx_news_category_item")
     .map(function (_, element) {
-      const slug = $(element).find("p a").attr("href")!;
-      const url = `${BASE_URL}/${slug}`;
+      const slug = $(element).find("p a").attr("href")!.slice(1);
+      const url = `${BASE_URL}${slug}`;
 
       return {
         title: $(element).find("h2 a").text(),
-        excerpt: $(element).find("p:nth-child(3)").text().replace("Lees meer »", "").trim(),
+        excerpt: $(element)
+          .find("p:nth-child(3)")
+          .text()
+          .replace("Lees meer »", "")
+          .trim(),
         date: $(element).find("time").attr("datetime")!,
         content: "",
         url: url,
@@ -54,5 +49,9 @@ export async function getPage(page: number | string = 1) {
     newsSchema.parse(item);
   }
 
-  return { data: news, nextPage: +page + 1, hasNextPage: page < totalPageCount };
+  return {
+    data: news,
+    nextPage: +page + 1,
+    hasNextPage: +page < totalPageCount,
+  };
 }
