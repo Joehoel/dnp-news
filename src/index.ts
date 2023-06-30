@@ -33,13 +33,13 @@ app.get("/", async (ctx) => {
 
   const news = await redis.get<News>("news");
 
-  if (news) {
+  if (news?.data.length) {
     return ctx.json(news);
   }
 
   const data = await getPage(page);
 
-  await redis.setex("news", 1000 * 60 * 60 * 24, data);
+  await redis.setex("news", 60 * 60 * 3, data);
 
   return ctx.json(data);
 });
