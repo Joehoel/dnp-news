@@ -3,7 +3,7 @@ import { BASE_URL } from "./constants.ts";
 import { newsSchema } from "./types.ts";
 import { parse } from "./parse.ts";
 import ky from "ky";
-
+import readingTime from "npm:reading-time";
 const dnp = ky.create({
   prefixUrl: BASE_URL,
   headers: {
@@ -35,6 +35,7 @@ export async function getPage(page: number | string = 1) {
           .trim(),
         date: $(element).find("time").attr("datetime")!,
         content: "",
+        readingTime: {},
         url: url,
         slug,
       };
@@ -45,6 +46,7 @@ export async function getPage(page: number | string = 1) {
     const article = await parse(item.url);
 
     item.content = article;
+    item.readingTime = readingTime(article);
 
     newsSchema.parse(item);
   }
