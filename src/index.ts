@@ -1,47 +1,17 @@
-import "dotenv";
 import { Hono } from "hono";
 import { serve } from "http/server";
-import { Redis } from "upstash";
-import { getPage } from "./scrape.ts";
-import { z } from "zod";
-
-type News = Awaited<ReturnType<typeof getPage>>;
+import api from "./routes/api/index.ts";
+import { logger } from "hono/middleware";
 
 const app = new Hono();
 
-const env = z
-  .object({
-    UPSTASH_REDIS_REST_URL: z.string().url(),
-    UPSTASH_REDIS_REST_TOKEN: z.string(),
-  })
-  .parse(Deno.env.toObject());
+app.use("*", logger());
+app.notFound((c) => c.json({ message: "Not Found", ok: false }, 404));
 
-const redis = new Redis({
-  url: env.UPSTASH_REDIS_REST_URL,
-  token: env.UPSTASH_REDIS_REST_TOKEN,
+app.get("/healthcheck", (ctx) => {
+  return ctx.text("ok");
 });
 
-app.get("/", async (ctx) => {
-  const page = ctx.req.query("page");
-
-  if (!page) {
-    return ctx.json({
-      error: "No page query parameter provided",
-      status: 400,
-    });
-  }
-
-  const news = await redis.get<News>("news");
-
-  if (news?.data.length) {
-    return ctx.json(news);
-  }
-
-  const data = await getPage(page);
-
-  await redis.setex("news", 60 * 60 * 3, data);
-
-  return ctx.json(data);
-});
+app.route("/api", api);
 
 await serve(app.fetch, { port: 8000 });

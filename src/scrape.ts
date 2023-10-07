@@ -1,9 +1,10 @@
 import * as cheerio from "cheerio";
-import { BASE_URL } from "./constants.ts";
-import { newsSchema } from "./types.ts";
-import { parse } from "./parse.ts";
 import ky from "ky";
 import readingTime from "npm:reading-time";
+import { BASE_URL } from "./constants.ts";
+import { parse } from "./parse.ts";
+import { newsSchema } from "./types.ts";
+
 const dnp = ky.create({
   prefixUrl: BASE_URL,
   headers: {

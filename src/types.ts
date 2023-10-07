@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ReadTimeResults } from "npm:reading-time";
+import { getPage } from "./scrape.ts";
 
 export const newsSchema = z.object({
   title: z.string(),
@@ -7,7 +7,7 @@ export const newsSchema = z.object({
   date: z.string(),
   content: z.string(),
   slug: z.string(),
-  readingTime: z.custom<ReadTimeResults>(),
+  url: z.string(),
 });
 
-export type News = z.infer<typeof newsSchema>;
+export type News = Awaited<ReturnType<typeof getPage>>;
