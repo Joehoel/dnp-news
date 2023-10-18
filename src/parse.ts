@@ -1,8 +1,6 @@
 import * as cheerio from "cheerio";
 
 export async function parse(url: string) {
-  console.log(`Parsing content for ${url}`);
-
   const html = await fetch(url, {
     method: "GET",
     headers: {
