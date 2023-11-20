@@ -1,5 +1,31 @@
 {
-  "version": "2",
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "npm:@effect/data": "npm:@effect/data@0.13.5",
+      "npm:@effect/io": "npm:@effect/io@0.31.3",
+      "npm:reading-time": "npm:reading-time@1.5.0"
+    },
+    "npm": {
+      "@effect/data@0.13.5": {
+        "integrity": "sha512-s9HYZkRHkN3doqOy+ICSKMr33hTe+YSod34Twt9oDI2OWgxoynsVjQ1gpM/BDn92SHv3Rgz6KTmVBKqYaqh/mQ==",
+        "dependencies": {}
+      },
+      "@effect/io@0.31.3": {
+        "integrity": "sha512-v8OltakxYj+TBUYk8ZnhrcebGd8xKavZZLjZm1p/uJqnqU8EgJq1aKCHaH7H5UdMsaZIunJG1W0NL2zDtdDYbw==",
+        "dependencies": {
+          "@effect/data": "@effect/data@0.13.5"
+        }
+      },
+      "reading-time@1.5.0": {
+        "integrity": "sha512-onYyVhBNr4CmAxFsKS7bz+uTLRakypIe4R+5A824vBSkQy/hB3fZepoVEf8OVAxzLvK+H/jm9TzpI3ETSm64Kg==",
+        "dependencies": {}
+      }
+    }
+  },
+  "redirects": {
+    "https://deno.land/x/base64/base64url.ts": "https://deno.land/x/base64@v0.2.1/base64url.ts"
+  },
   "remote": {
     "https://deno.land/std@0.173.0/_util/asserts.ts": "178dfc49a464aee693a7e285567b3d0b555dc805ff490505a8aae34f9cfb1462",
     "https://deno.land/std@0.173.0/_util/os.ts": "d932f56d41e4f6a6093d56044e29ce637f8dcc43c5a90af43504a889cf1775e3",
@@ -332,28 +358,5 @@
     "https://esm.sh/v115/ky@0.33.3/distribution/types/options.d.ts": "35bb34e6a2af7d02645bb66aef564e41457fc33f293d1aba2da397b6da8866aa",
     "https://esm.sh/v115/ky@0.33.3/distribution/types/response.d.ts": "fd7cdcf4a60ac72826774dddc27878b62ab87f74e574dfaa6a8818458f0f505d",
     "https://esm.sh/v115/ky@0.33.3/distribution/types/retry.d.ts": "96a0e14854cadd119faac1df7e4fa92ddb0a6119fa7535b5a9b08903ecc4cf52"
-  },
-  "npm": {
-    "specifiers": {
-      "@effect/data": "@effect/data@0.13.5",
-      "@effect/io": "@effect/io@0.31.3",
-      "reading-time": "reading-time@1.5.0"
-    },
-    "packages": {
-      "@effect/data@0.13.5": {
-        "integrity": "sha512-s9HYZkRHkN3doqOy+ICSKMr33hTe+YSod34Twt9oDI2OWgxoynsVjQ1gpM/BDn92SHv3Rgz6KTmVBKqYaqh/mQ==",
-        "dependencies": {}
-      },
-      "@effect/io@0.31.3": {
-        "integrity": "sha512-v8OltakxYj+TBUYk8ZnhrcebGd8xKavZZLjZm1p/uJqnqU8EgJq1aKCHaH7H5UdMsaZIunJG1W0NL2zDtdDYbw==",
-        "dependencies": {
-          "@effect/data": "@effect/data@0.13.5"
-        }
-      },
-      "reading-time@1.5.0": {
-        "integrity": "sha512-onYyVhBNr4CmAxFsKS7bz+uTLRakypIe4R+5A824vBSkQy/hB3fZepoVEf8OVAxzLvK+H/jm9TzpI3ETSm64Kg==",
-        "dependencies": {}
-      }
-    }
   }
 }

@@ -51,6 +51,8 @@ export async function getPage(page: number | string = 1) {
     newsSchema.parse(item);
   }
 
+  console.log("Done fetching page: " + page);
+
   return {
     data: news,
     nextPage: +page + 1,

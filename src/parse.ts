@@ -8,11 +8,14 @@ export async function parse(url: string) {
       "User-Agent":
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36",
     },
-  }).then(res => res.text());
+  }).then((res) => res.text());
 
   const $ = cheerio.load(html);
 
+  $(".mx_share").remove();
+  $(".back").remove();
+
   const content = $("#mx_news_item").html();
 
-  return content?.split("<script").shift()!;
+  return content!;
 }
