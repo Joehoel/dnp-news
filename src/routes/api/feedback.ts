@@ -27,7 +27,7 @@ feedback.post(
     const payload = await linear.createIssue({
       title: `Feedback from ${name}`,
       description: `Email: ${email}\n\n${message}\n\nType: ${type}`,
-      teamId: "971bf779-3fa3-4cc7-90cb-c8f8308b9f2a",
+      teamId: Deno.env.get("LINEAR_TEAM_ID")!,
     });
 
     const issue = await payload.issue;
