@@ -8,6 +8,7 @@
     "hono": "https://deno.land/x/hono@v3.8.0-rc.2/mod.ts",
     "hono/middleware": "https://deno.land/x/hono@v3.8.0-rc.2/middleware.ts",
     "dotenv": "https://deno.land/std@0.192.0/dotenv/load.ts",
-    "zod": "https://deno.land/x/zod@v3.19.1/mod.ts"
+    "zod": "https://deno.land/x/zod@v3.19.1/mod.ts",
+    "linear": "npm:@linear/sdk@11.0.0"
   }
 }
