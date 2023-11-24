@@ -12,8 +12,6 @@ const input = z.object({
   type: z.enum(["bug", "suggestion", "feedback"]),
 });
 
-type Input = z.infer<typeof input>;
-
 feedback.post(
   "/",
   validator("json", (value, ctx) => {
