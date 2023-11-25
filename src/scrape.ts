@@ -35,7 +35,6 @@ export async function getPage(page: number | string = 1) {
           .trim(),
         date: $(element).find("time").attr("datetime")!,
         content: "",
-        readingTime: {},
         url: url,
         slug,
       };
