@@ -1,6 +1,5 @@
 import * as cheerio from "cheerio";
 import ky from "ky";
-import readingTime from "npm:reading-time";
 import { BASE_URL } from "./constants.ts";
 import { parse } from "./parse.ts";
 import { newsSchema } from "./types.ts";
@@ -24,8 +23,8 @@ export async function getPage(page: number | string = 1) {
 
   const news = $(".mx_news_category_item")
     .map(function (_, element) {
-      const slug = $(element).find("p a").attr("href")!.slice(1);
-      const url = `${BASE_URL}${slug}`;
+      const slug = $(element).find("p a").attr("href")!.slice(1).split("/")[1];
+      const url = `${BASE_URL}nieuws/${slug}`;
 
       return {
         title: $(element).find("h2 a").text(),
@@ -47,7 +46,6 @@ export async function getPage(page: number | string = 1) {
     const article = await parse(item.url);
 
     item.content = article;
-    item.readingTime = readingTime(article);
 
     newsSchema.parse(item);
   }

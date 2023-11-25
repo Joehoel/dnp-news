@@ -1,7 +1,7 @@
 {
   "importMap": "import_map.json",
   "tasks": {
-    "dev": "deno run --allow-read --allow-net --allow-env  --watch src/index.ts",
-    "start": "deno run --allow-read --allow-net --allow-env  src/index.ts"
+    "dev": "deno run --allow-read --allow-net --allow-env --unstable --watch src/index.ts",
+    "start": "deno run --allow-read --allow-net --allow-env --unstable src/index.ts"
   }
 }

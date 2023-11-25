@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { getPage } from "./scrape.ts";
 
 export const newsSchema = z.object({
   title: z.string(),
@@ -10,4 +9,4 @@ export const newsSchema = z.object({
   url: z.string(),
 });
 
-export type News = Awaited<ReturnType<typeof getPage>>;
+export type Article = z.infer<typeof newsSchema>;
