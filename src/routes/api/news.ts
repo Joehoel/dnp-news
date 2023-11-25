@@ -5,10 +5,11 @@ import { Article } from "../../types.ts";
 const news = new Hono();
 
 news.get("/", async (ctx) => {
-  const page = ctx.req.query("page") ?? "1";
+  // const page = ctx.req.query("page") ?? "1";
+  const cursor = ctx.req.query("cursor");
 
   const data: Article[] = [];
-  const iter = kv.list<string>({ prefix: ["news"] });
+  const iter = kv.list<string>({ prefix: ["news"] }, { limit: 20, cursor });
 
   for await (const item of iter) {
     data.push(JSON.parse(item.value));
@@ -32,9 +33,9 @@ news.get("/", async (ctx) => {
     new Date(Date.now() + 86400 * 1000).toUTCString()
   );
   // Set unique ETag
-  ctx.res.headers.set("ETag", `news-${page}`);
+  ctx.res.headers.set("ETag", `news-${iter.cursor}`);
 
-  return ctx.json(sorted);
+  return ctx.json({ data: sorted, cursor: iter.cursor });
 });
 
 export default news;
