@@ -1,5 +1,6 @@
 import { LinearClient } from "linear";
+import { env } from "./env.ts";
 
 export const linear = new LinearClient({
-  apiKey: Deno.env.get("LINEAR_API_KEY")!,
+  apiKey: env.LINEAR_API_KEY,
 });

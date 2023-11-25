@@ -2,6 +2,7 @@ import { Hono, validator } from "hono";
 
 import { linear } from "../../lib/linear.ts";
 import { z } from "zod";
+import { env } from "../../lib/env.ts";
 
 const feedback = new Hono();
 
@@ -27,7 +28,7 @@ feedback.post(
     const payload = await linear.createIssue({
       title: `Feedback from ${name}`,
       description: `Email: ${email}\n\n${message}\n\nType: ${type}`,
-      teamId: Deno.env.get("LINEAR_TEAM_ID")!,
+      teamId: env.LINEAR_TEAM_ID,
     });
 
     const issue = await payload.issue;
