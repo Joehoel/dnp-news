@@ -1,18 +1,30 @@
 import { trpcServer } from '@hono/trpc-server';
-import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { cache } from 'hono/cache';
 import { createContext } from './context';
 import { createDb } from './db/client';
 import { article } from './db/schema';
 import { getPage, getPageCount } from './lib/scraper';
 import { appRouter } from './router';
 import news from './routes/news';
+import payments from './routes/payments';
 
-export type Bindings = {
+export type Env = {
 	DB: D1Database;
+	MOLLIE_API_KEY: string;
+	LINEAR_API_KEY: string;
+	LINEAR_TEAM_ID: string;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{ Bindings: Env }>();
+
+app.get(
+	'*',
+	cache({
+		cacheName: 'dnp',
+		cacheControl: 'max-age=3600',
+	})
+);
 
 // Setup TRPC server with context
 app.use('/trpc/*', async (c, next) => {
@@ -25,6 +37,8 @@ app.use('/trpc/*', async (c, next) => {
 });
 
 app.route('/news', news);
+app.route('/payments', payments);
+// app.route('/feedback', feedback);
 
 export default {
 	fetch: app.fetch,
@@ -58,4 +72,4 @@ export default {
 			await db.batch(queries as [Query, ...Query[]]);
 		}
 	},
-} satisfies ExportedHandler<Bindings>;
+} satisfies ExportedHandler<Env>;

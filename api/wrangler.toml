@@ -10,5 +10,5 @@ database_name = "DNP"
 database_id = "1b2a71bc-577b-4ae3-a9a5-747488198641"
 
 [triggers]
-# At 9 AM every day
-crons = [ "0 9 * * *" ]
+# Every 6 hours
+crons = ["0 */6 * * *"]

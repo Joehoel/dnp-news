@@ -3,12 +3,12 @@ import { Hono } from 'hono';
 import { validator } from 'hono/validator';
 import { createDb } from '../db/client';
 import { article } from '../db/schema';
-import { Bindings } from '../worker';
+import { Env } from '../worker';
 
 import { withCursorPagination } from 'drizzle-pagination';
 import { object, optional, safeParse, string } from 'valibot';
 
-const news = new Hono<{ Bindings: Bindings }>();
+const news = new Hono<{ Bindings: Env }>();
 
 const input = object({
 	cursor: optional(string()),
