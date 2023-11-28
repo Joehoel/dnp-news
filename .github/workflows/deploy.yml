@@ -24,6 +24,12 @@ jobs:
           node-version: 18
       - run: npm ci
 
+      - name: Migrate database
+        run: npm run migrate
+        env:
+          NO_D1_WARNING: true
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+
       - name: Deploy
         uses: cloudflare/wrangler-action@v3.3.2
         with:

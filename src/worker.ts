@@ -9,6 +9,18 @@ import { appRouter } from './router';
 import news from './routes/news';
 import payments from './routes/payments';
 
+import * as Sentry from '@sentry/node';
+import { ProfilingIntegration } from '@sentry/profiling-node';
+
+Sentry.init({
+	dsn: 'https://b311de4d752fb749bd89e84094954cd9@o4504564317749248.ingest.sentry.io/4506304656703488',
+	integrations: [new ProfilingIntegration()],
+	// Performance Monitoring
+	tracesSampleRate: 1.0,
+	// Set sampling rate for profiling - this is relative to tracesSampleRate
+	profilesSampleRate: 1.0,
+});
+
 export type Env = {
 	DB: D1Database;
 	MOLLIE_API_KEY: string;
