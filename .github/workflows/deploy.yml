@@ -18,8 +18,10 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm ci
 
       - name: Migrate database
         run: npm run migrate
