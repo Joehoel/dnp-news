@@ -55,33 +55,37 @@ app.route('/payments', payments);
 export default {
 	fetch: app.fetch,
 	async scheduled(_, env) {
-		const db = createDb(env.DB);
-		const pageCount = await getPageCount();
+		try {
+			const db = createDb(env.DB);
+			const pageCount = await getPageCount();
 
-		console.log({ pageCount });
+			console.log('Scraping', pageCount, 'pages');
 
-		for (let i = 1; i <= pageCount; i++) {
-			console.log('Scraping page', i);
-			const page = await getPage(i);
-			const queries = page.data.map((item) => {
-				return db
-					.insert(article)
-					.values(item)
-					.onConflictDoUpdate({
-						set: {
-							title: item.title,
-							excerpt: item.excerpt,
-							date: item.date,
-							url: item.url,
-							slug: item.slug,
-						},
-						target: [article.slug],
-					});
-			});
+			for (let i = 1; i <= pageCount; i++) {
+				console.log('Scraping page', i);
+				const page = await getPage(i);
+				const queries = page.data.map((item) => {
+					return db
+						.insert(article)
+						.values(item)
+						.onConflictDoUpdate({
+							set: {
+								title: item.title,
+								excerpt: item.excerpt,
+								date: item.date,
+								url: item.url,
+								slug: item.slug,
+							},
+							target: [article.slug],
+						});
+				});
 
-			type Query = (typeof queries)[number];
+				type Query = (typeof queries)[number];
 
-			await db.batch(queries as [Query, ...Query[]]);
+				await db.batch(queries as [Query, ...Query[]]);
+			}
+		} catch (error) {
+			Sentry.captureException(error);
 		}
 	},
 } satisfies ExportedHandler<Env>;
