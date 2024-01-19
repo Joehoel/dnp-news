@@ -1,14 +1,12 @@
 {
+	"extends": "@apify/tsconfig",
 	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "node",
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"lib": ["esnext"],
-		"types": ["@cloudflare/workers-types"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "hono/jsx"
-	}
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"target": "ES2022",
+		"outDir": "dist",
+		"noUnusedLocals": false,
+		"lib": ["DOM"]
+	},
+	"include": ["./src/**/*"]
 }

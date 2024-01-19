@@ -1,6 +1,11 @@
-*.vars
-node_modules/
-.wrangler/
+# This file tells Git which files shouldn't be added to source control
 
-# Sentry Config File
-.sentryclirc
+.idea
+dist
+node_modules
+apify_storage
+crawlee_storage
+storage
+
+# Added by Apify CLI
+.venv
