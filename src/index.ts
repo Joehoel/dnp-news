@@ -1,6 +1,5 @@
-import "dotenv";
-import { Hono } from "hono";
-import { serve } from "http/server";
+import "@std/dotenv/load";
+import { Hono } from "@hono/hono";
 import { Redis } from "upstash";
 import { getPage } from "./scrape.ts";
 import { z } from "zod";
@@ -44,4 +43,4 @@ app.get("/", async (ctx) => {
   return ctx.json(data);
 });
 
-await serve(app.fetch, { port: 8000 });
+Deno.serve({ port: 8000 }, app.fetch);

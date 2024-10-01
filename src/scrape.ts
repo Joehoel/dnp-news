@@ -3,7 +3,7 @@ import { BASE_URL } from "./constants.ts";
 import { newsSchema } from "./types.ts";
 import { parse } from "./parse.ts";
 import ky from "ky";
-import readingTime from "npm:reading-time";
+
 const dnp = ky.create({
   prefixUrl: BASE_URL,
   headers: {
@@ -21,21 +21,16 @@ export async function getPage(page: number | string = 1) {
 
   const totalPageCount = +$(".mx_pagination ul li:last-child a").text();
 
-  const news = $(".mx_news_category_item")
+  const news = $(".mx_news_category_item_new")
     .map(function (_, element) {
-      const slug = $(element).find("p a").attr("href")!.slice(1);
+      const slug = $(element).find("a").attr("href")!.slice(1);
       const url = `${BASE_URL}${slug}`;
 
       return {
-        title: $(element).find("h2 a").text(),
-        excerpt: $(element)
-          .find("p:nth-child(3)")
-          .text()
-          .replace("Lees meer »", "")
-          .trim(),
+        title: $(element).find("h3").text().trim(),
+        excerpt: $(element).find("p:nth-child(3)").text().trim(),
         date: $(element).find("time").attr("datetime")!,
         content: "",
-        readingTime: {},
         url: url,
         slug,
       };
@@ -46,7 +41,6 @@ export async function getPage(page: number | string = 1) {
     const article = await parse(item.url);
 
     item.content = article;
-    item.readingTime = readingTime(article);
 
     newsSchema.parse(item);
   }

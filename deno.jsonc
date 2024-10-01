@@ -1,0 +1,15 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-read --allow-net --allow-env  --watch src/index.ts",
+    "start": "deno run --allow-read --allow-net --allow-env  src/index.ts"
+  },
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4.6.3",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
+    "@std/http": "jsr:@std/http@^1.0.7",
+    "cheerio": "npm:cheerio@1.0.0",
+    "ky": "npm:ky@0.33.3",
+    "upstash": "https://deno.land/x/upstash_redis@v1.21.0/mod.ts",
+    "zod": "https://deno.land/x/zod@v3.21.4/mod.ts"
+  }
+}

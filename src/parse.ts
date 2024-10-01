@@ -15,7 +15,13 @@ export async function parse(url: string) {
   $(".mx_share").remove();
   $(".back").remove();
 
-  const content = $("#mx_news_item").html();
+  const content = $("#mx_news_item")
+    .children()
+    .slice(2)
+    .map((i, el) => $(el).html())
+    .get()
+    .join("")
+    .replace("Naar het overzicht", "");
 
-  return content!;
+  return content;
 }
